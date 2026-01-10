@@ -1,36 +1,190 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Toolify Website
 
-## Getting Started
+A modern, responsive landing page for Toolify - built with Next.js, Tailwind CSS, and Framer Motion.
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
+## 🚀 Features
+
+- **Modern UI**: Built with Tailwind CSS and Shadcn UI components
+- **Smooth Animations**: Framer Motion for delightful interactions
+- **3D Effects**: Interactive tilt and floating elements
+- **Responsive Design**: Optimized for all screen sizes
+- **Dark Mode Ready**: Full theme support with CSS variables
+- **Docker Ready**: Multi-stage builds for production and development
+- **TypeScript**: Fully typed codebase
+
+## 📋 Prerequisites
+
+- Node.js 20+ or Docker
+- npm, yarn, pnpm, or bun
+
+## 🛠️ Getting Started
+
+### Local Development
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/mehmetsagir/toolify-website.git
+cd toolify-website
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+### Docker Development
 
-To learn more about Next.js, take a look at the following resources:
+Using Docker Compose (recommended for development):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Start development mode with hot reload
+docker-compose --profile dev up
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# View logs
+docker-compose logs -f
 
-## Deploy on Vercel
+# Stop containers
+docker-compose down
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🐳 Docker Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Production Build
+
+```bash
+# Build the Docker image
+docker build -t toolify-website .
+
+# Run the container
+docker run -p 3000:3000 toolify-website
+```
+
+### Using Docker Compose
+
+```bash
+# Build and start production container
+docker-compose up -d --build
+
+# Or use the deploy script
+./deploy.sh
+```
+
+Access your application at http://localhost:3000
+
+### Multi-Stage Build
+
+The Dockerfile uses a multi-stage build for optimization:
+- **deps**: Installs production dependencies
+- **builder**: Builds the Next.js application
+- **runner**: Minimal production image with only necessary files
+
+## ☁️ Cloud Deployment
+
+### Dokploy Deployment
+
+1. Connect your GitHub repository to Dokploy
+2. Select the `toolify-website` repository
+3. Configure deployment:
+   - **Build Type**: Dockerfile
+   - **Dockerfile**: `Dockerfile` (in repository root)
+   - **Port**: 3000
+   - **Environment**: Production
+
+4. Deploy!
+
+**Note**: Dokploy will automatically detect and use the Dockerfile in the repository root.
+
+### Vercel Deployment
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
+
+### Other Platforms
+
+This project can be deployed on any platform that supports Docker:
+- Railway
+- Render
+- DigitalOcean App Platform
+- AWS ECS
+- Google Cloud Run
+- Azure Container Apps
+
+## 📁 Project Structure
+
+```
+toolify-website/
+├── app/              # Next.js app directory
+│   ├── layout.tsx   # Root layout
+│   ├── page.tsx     # Hero page
+│   └── globals.css  # Global styles
+├── components.json   # Shadcn UI config
+├── lib/            # Utility functions
+├── public/          # Static assets
+├── Dockerfile       # Production build
+├── Dockerfile.dev   # Development build
+├── docker-compose.yml # Orchestration
+└── deploy.sh        # Deployment script
+```
+
+## 🎨 Customization
+
+### Branding
+
+Edit `app/layout.tsx` to update:
+- Page title
+- Meta description
+- Favicon
+
+### Styling
+
+Modify `app/globals.css` to customize:
+- Color scheme
+- Font families
+- CSS variables
+
+### Content
+
+Update `app/page.tsx` to change:
+- Hero section text
+- Feature highlights
+- Call-to-action buttons
+
+## 🧪 Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+## 🔧 Environment Variables
+
+Optional environment variables:
+
+```bash
+NODE_ENV=production  # Set environment
+PORT=3000            # Server port
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+## 📞 Support
+
+For issues and questions, please open an issue on GitHub.
