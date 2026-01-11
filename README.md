@@ -44,21 +44,6 @@ npm run dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### Docker Development
-
-Using Docker Compose (recommended for development):
-
-```bash
-# Start development mode with hot reload
-docker-compose --profile dev up
-
-# View logs
-docker-compose logs -f
-
-# Stop containers
-docker-compose down
-```
-
 ## 🐳 Docker Deployment
 
 ### Production Build
@@ -189,11 +174,19 @@ toolify-website/
 ├── dokploy.config.js # Dokploy configuration
 ├── lib/            # Utility functions
 ├── public/          # Static assets
-├── Dockerfile       # Production build
-├── Dockerfile.dev   # Development build
-├── docker-compose.yml # Orchestration
+├── Dockerfile       # Production multi-stage build
+├── docker-compose.yml # Container orchestration
 └── deploy.sh        # Deployment script
 ```
+
+### Single Dockerfile Architecture
+
+This project uses a single Dockerfile with multi-stage build:
+- **deps**: Installs production dependencies
+- **builder**: Builds the Next.js application
+- **runner**: Minimal production image with only necessary files
+
+The `docker-compose.yml` orchestrates the build and deployment process.
 
 ## 🎨 Customization
 
