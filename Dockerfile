@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install production dependencies with cache
 RUN npm ci --only=production
 
 # Stage 2: Builder
@@ -21,6 +21,7 @@ COPY . .
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
 
 # Build the application
 RUN npm run build
@@ -30,8 +31,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Create non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 -G nodejs nextjs
 
 # Set environment to production
 ENV NODE_ENV production
