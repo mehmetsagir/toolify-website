@@ -15,6 +15,7 @@ A modern, responsive landing page for Toolify - built with Next.js, Tailwind CSS
 - **Dark Mode Ready**: Full theme support with CSS variables
 - **Docker Ready**: Multi-stage builds for production and development
 - **TypeScript**: Fully typed codebase
+- **Dokploy Configured**: One-click deployment ready
 
 ## 📋 Prerequisites
 
@@ -91,19 +92,76 @@ The Dockerfile uses a multi-stage build for optimization:
 
 ## ☁️ Cloud Deployment
 
-### Dokploy Deployment
+### Dokploy Deployment (Recommended)
 
-1. Connect your GitHub repository to Dokploy
-2. Select the `toolify-website` repository
-3. Configure deployment:
-   - **Build Type**: Dockerfile
-   - **Dockerfile**: `Dockerfile` (in repository root)
-   - **Port**: 3000
-   - **Environment**: Production
+Dokploy configuration is included for easy one-click deployment:
 
-4. Deploy!
+**Step 1: Connect Repository**
+```bash
+1. Go to your Dokploy dashboard
+2. Add a new application
+3. Connect GitHub repository: mehmetsagir/toolify-website
+```
 
-**Note**: Dokploy will automatically detect and use the Dockerfile in the repository root.
+**Step 2: Configure Deployment**
+
+The `dokploy.config.js` file provides automatic configuration:
+
+| Setting | Value |
+|---------|--------|
+| Build Type | Docker |
+| Dockerfile | `Dockerfile` (root) |
+| Port | 3000 |
+| Memory | 512Mi |
+| CPU | 0.5 |
+| Health Check | `/` every 30s |
+
+**Step 3: Deploy**
+1. Click "Deploy" button
+2. Dokploy will:
+   - Clone the repository
+   - Build Docker image using Dockerfile
+   - Start container with health checks
+   - Assign domain
+
+**Environment Variables (Optional)**
+Configure in Dokploy UI or `dokploy.config.js`:
+```bash
+NODE_ENV=production
+NEXT_TELEMETRY_DISABLED=1
+```
+
+**Custom Domain (Optional)**
+Edit `dokploy.config.js`:
+```javascript
+domain: {
+  domain: 'toolify.yourdomain.com',
+},
+```
+
+**Manual Deployment via Dokploy CLI**
+```bash
+# Install Dokploy CLI (if needed)
+npm install -g dokploy
+
+# Deploy
+dokploy deploy
+```
+
+### Dokploy Troubleshooting
+
+**Build Issues:**
+- Check Dockerfile syntax: `docker build -t test .`
+- Ensure Node.js 20+ compatibility
+
+**Runtime Issues:**
+- Check logs: `dokploy logs`
+- Verify port 3000 is exposed
+- Health check endpoint: `curl http://your-domain.com/`
+
+**Performance:**
+- Increase memory if needed (edit `dokploy.config.js`)
+- CPU scaling: 0.5 → 1.0 for heavier loads
 
 ### Vercel Deployment
 
@@ -128,6 +186,7 @@ toolify-website/
 │   ├── page.tsx     # Hero page
 │   └── globals.css  # Global styles
 ├── components.json   # Shadcn UI config
+├── dokploy.config.js # Dokploy configuration
 ├── lib/            # Utility functions
 ├── public/          # Static assets
 ├── Dockerfile       # Production build
@@ -175,6 +234,7 @@ Optional environment variables:
 ```bash
 NODE_ENV=production  # Set environment
 PORT=3000            # Server port
+NEXT_TELEMETRY_DISABLED=1  # Disable Next.js telemetry
 ```
 
 ## 📄 License
