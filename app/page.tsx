@@ -15,9 +15,6 @@ import { GITHUB_REPO, DOWNLOAD_CONFIG } from "@/config/constants";
 
 export default function Home() {
   const [isDownloading, setIsDownloading] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<"card" | "badge" | null>(
-    "card"
-  );
   const [is3DAreaHovered, setIs3DAreaHovered] = useState(false);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -153,6 +150,9 @@ export default function Home() {
               >
                 Open source, actively developed
               </a>
+            </motion.div>
+
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
@@ -180,8 +180,8 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
-              </div>
-            </motion.div>
+
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
@@ -272,9 +272,6 @@ export default function Home() {
                     <div className="h-1.5 sm:h-2 w-4/5 rounded-full bg-emerald-500/15" />
                   </div>
                 </motion.div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
               </motion.div>
             </motion.div>
           </motion.div>
