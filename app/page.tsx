@@ -32,40 +32,40 @@ export default function Home() {
         <motion.div
           className="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-emerald-400/20 blur-[120px]"
           animate={{ y: [0, 30, 0], opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="absolute bottom-[-10%] right-[-5%] h-80 w-80 rounded-full bg-sky-400/20 blur-[120px]"
           animate={{ y: [0, -25, 0], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:120px_120px]" />
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center px-6">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-[1.1fr_0.9fr] items-start gap-10 sm:gap-12">
-          <div className="text-center lg:text-left">
+      <section className="relative min-h-screen flex items-center px-4 sm:px-6 py-12 sm:py-0">
+        <div className="mx-auto flex flex-col-reverse lg:grid w-full max-w-6xl lg:grid-cols-[1.1fr_0.9fr] items-center lg:items-start gap-8 sm:gap-10 lg:gap-12">
+          <div className="text-center lg:text-left w-full">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300"
             >
-              <Sparkles className="h-4 w-4 text-emerald-300" />
-              Built for focused creators
+              <Zap className="h-4 w-4 text-amber-300" />
+              Think faster, work smarter
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="mt-4 sm:mt-6 text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
             >
-              Speak once.
+              Stop typing.{" "}
               <br />
               <span className="bg-gradient-to-r from-emerald-300 via-sky-300 to-orange-300 bg-clip-text text-transparent">
-                Publish everywhere.
+                Start creating.
               </span>
             </motion.h1>
 
@@ -73,26 +73,29 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="mt-6 text-lg text-gray-300"
+              className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-300 max-w-2xl mx-auto lg:mx-0"
             >
-              Toolify captures clean audio, transcribes with Whisper, and turns your voice into drafts, clips, and notes
-              without breaking your flow.
+              Hit a key, speak your mind, and watch your words appear instantly. Use local Whisper models offline or connect to OpenAI API—your choice. Fast, flexible, and always ready.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
+              className="mt-6 sm:mt-8 flex flex-col items-center gap-3 sm:gap-4 sm:flex-row lg:justify-start"
             >
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-gray-100 sm:w-auto"
+                onClick={handleDownload}
+                disabled={isDownloading}
+                whileHover={{ scale: isDownloading ? 1 : 1.02 }}
+                whileTap={{ scale: isDownloading ? 1 : 0.98 }}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed sm:w-auto"
               >
-                <Download className="h-4 w-4" />
-                Download for Mac
-                <ArrowRight className="h-4 w-4" />
+                <Download
+                  className={`h-4 w-4 ${isDownloading ? "animate-bounce" : ""}`}
+                />
+                {isDownloading ? "Downloading..." : "Download for Mac"}
+                {!isDownloading && <ArrowRight className="h-4 w-4" />}
               </motion.button>
               <a
                 href="https://github.com/mehmetsagir/toolify"
