@@ -47,9 +47,11 @@ export default function Home() {
       window.location.href = dmgAsset.browser_download_url;
     } catch (error) {
       console.error("Download error:", error);
-      alert(
-        "Failed to download. Please try again or visit the GitHub releases page."
-      );
+
+      // Redirect to GitHub releases page on error
+      if (confirm("Failed to download automatically. Would you like to visit the releases page?")) {
+        window.open(GITHUB_REPO.RELEASES_PAGE, "_blank");
+      }
     } finally {
       setIsDownloading(false);
     }
@@ -143,7 +145,7 @@ export default function Home() {
                 {!isDownloading && <ArrowRight className="h-4 w-4" />}
               </motion.button>
               <a
-                href="https://github.com/mehmetsagir/toolify"
+                href={GITHUB_REPO.REPO_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white/80 transition-colors hover:bg-white/10 sm:w-auto"
