@@ -1,14 +1,62 @@
-'use client';
+"use client";
 
-import type { MouseEvent } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { Mic, Download, ArrowRight, Sparkles, Volume2, Zap } from 'lucide-react';
+import type { MouseEvent } from "react";
+import { useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import {
+  Mic,
+  Download,
+  ArrowRight,
+  Sparkles,
+  Volume2,
+  Zap,
+} from "lucide-react";
+import { GITHUB_REPO, DOWNLOAD_CONFIG } from "@/config/constants";
 
 export default function Home() {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<"card" | "badge" | null>(
+    "card"
+  );
+  const [is3DAreaHovered, setIs3DAreaHovered] = useState(false);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const smoothX = useSpring(rotateX, { stiffness: 120, damping: 14 });
   const smoothY = useSpring(rotateY, { stiffness: 120, damping: 14 });
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+
+      // Fetch latest release from GitHub API
+      const response = await fetch(GITHUB_REPO.RELEASES_API);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch latest release");
+      }
+
+      const release = await response.json();
+
+      // Find the DMG asset
+      const dmgAsset = release.assets.find((asset: { name: string }) =>
+        asset.name.endsWith(DOWNLOAD_CONFIG.FILE_EXTENSION)
+      );
+
+      if (!dmgAsset) {
+        throw new Error(`${DOWNLOAD_CONFIG.FILE_EXTENSION} file not found in latest release`);
+      }
+
+      // Trigger download
+      window.location.href = dmgAsset.browser_download_url;
+    } catch (error) {
+      console.error("Download error:", error);
+      alert(
+        "Failed to download. Please try again or visit the GitHub releases page."
+      );
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -105,85 +153,128 @@ export default function Home() {
               >
                 Open source, actively developed
               </a>
-            </motion.div>
-
-            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 lg:justify-start"
+              className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm text-gray-400 lg:justify-start"
             >
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-amber-300" />
-                Instant transcription
+                Instant capture
               </div>
               <div className="flex items-center gap-2">
-                <Volume2 className="h-4 w-4 text-emerald-300" />
-                Auto-ducking audio
+                <Sparkles className="h-4 w-4 text-emerald-300" />
+                Offline or cloud—your choice
               </div>
               <div className="flex items-center gap-2">
                 <Mic className="h-4 w-4 text-sky-300" />
-                Studio-grade capture
+                One keyboard shortcut
               </div>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-emerald-200" />
-                Local models, offline-ready
+                <Volume2 className="h-4 w-4 text-purple-300" />
+                Studio-quality results
               </div>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-sky-200" />
-                Optional OpenAI API key
+                <Download className="h-4 w-4 text-sky-200" />
+                Auto-copy anywhere
               </div>
             </motion.div>
           </div>
-
-          <motion.div
+              </div>
+            </motion.div>
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="relative mx-auto flex h-[420px] w-full max-w-[440px] items-center justify-center lg:h-[480px]"
-            style={{ perspective: '1200px' }}
+            className="relative mx-auto flex h-[320px] sm:h-[380px] md:h-[420px] w-full max-w-[340px] sm:max-w-[380px] md:max-w-[440px] items-center justify-center lg:h-[480px]"
+            style={{ perspective: "1200px" }}
             onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => setIs3DAreaHovered(true)}
+            onMouseLeave={() => {
+              handleMouseLeave();
+              setIs3DAreaHovered(false);
+            }}
           >
             <motion.div
-              className="absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/20 blur-[140px]"
+              className="absolute left-1/2 top-1/2 h-[280px] w-[280px] sm:h-[320px] sm:w-[320px] md:h-[360px] md:w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/20 blur-[100px] sm:blur-[120px] md:blur-[140px]"
               animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
               className="relative h-full w-full"
-              style={{ transformStyle: 'preserve-3d', rotateX: smoothX, rotateY: smoothY }}
+              style={{
+                transformStyle: 'preserve-3d',
+                rotateX: smoothX,
+                rotateY: smoothY,
+              }}
             >
               <motion.div
-                className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.7),rgba(59,130,246,0.35),rgba(16,185,129,0.2),transparent_70%)] shadow-[0_40px_100px_rgba(14,116,144,0.45)]"
+                className="absolute left-1/2 top-1/2 h-64 w-64 sm:h-72 sm:w-72 md:h-80 md:w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.7),rgba(59,130,246,0.35),rgba(16,185,129,0.2),transparent_70%)] shadow-[0_30px_80px_rgba(14,116,144,0.45)] sm:shadow-[0_40px_100px_rgba(14,116,144,0.45)]"
                 style={{ transform: 'translateZ(70px)' }}
               />
               <motion.div
-                className="absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15"
+                className="absolute left-1/2 top-1/2 h-[280px] w-[280px] sm:h-[320px] sm:w-[320px] md:h-[360px] md:w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15"
                 style={{ transform: 'translateZ(20px) rotateX(70deg)' }}
                 animate={{ rotateZ: [0, 20, 0] }}
                 transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
               />
+
+              {/* Cards Container - rotates with mouse */}
               <motion.div
-                className="absolute left-1/2 top-1/2 w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-[26px] border border-white/15 bg-white/8 p-5 shadow-[0_40px_70px_rgba(15,23,42,0.55)] backdrop-blur-xl"
-                style={{ transform: 'translateZ(40px) rotate(-6deg)' }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: 'translateZ(40px)'
+                }}
               >
-                <div className="text-xs uppercase tracking-[0.25em] text-gray-400">Soundboard</div>
-                <div className="mt-3 text-2xl font-semibold text-white">Clean, crisp input</div>
-                <div className="mt-4 space-y-3">
-                  <div className="h-2 w-4/5 rounded-full bg-gradient-to-r from-emerald-300/70 to-sky-300/60" />
-                  <div className="h-2 w-2/3 rounded-full bg-white/20" />
-                  <div className="h-2 w-3/4 rounded-full bg-white/15" />
-                </div>
+                {/* Ana Kart - Toolify */}
+                <motion.div
+                  className="absolute w-[200px] sm:w-[230px] md:w-[260px] rounded-[20px] sm:rounded-[24px] md:rounded-[26px] border border-white/15 bg-white/8 p-4 sm:p-5 shadow-[0_30px_60px_rgba(15,23,42,0.55)] sm:shadow-[0_40px_70px_rgba(15,23,42,0.55)] backdrop-blur-xl cursor-pointer left-[-100px] top-[-80px] sm:left-[-115px] md:left-[-130px] sm:top-[-90px] md:top-[-100px]"
+                  animate={{
+                    y: is3DAreaHovered ? -60 : 0,
+                    opacity: is3DAreaHovered ? 0.7 : 1,
+                    rotate: -6
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  style={{
+                    zIndex: is3DAreaHovered ? 10 : 20
+                  }}
+                >
+                  <div className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-gray-400">Toolify</div>
+                  <div className="mt-2 sm:mt-3 text-xl sm:text-2xl font-semibold text-white">Voice to text, instantly</div>
+                  <div className="mt-3 sm:mt-4 space-y-2 sm:space-y-3">
+                    <div className="h-1.5 sm:h-2 w-4/5 rounded-full bg-gradient-to-r from-emerald-300/70 to-sky-300/60" />
+                    <div className="h-1.5 sm:h-2 w-2/3 rounded-full bg-white/20" />
+                    <div className="h-1.5 sm:h-2 w-3/4 rounded-full bg-white/15" />
+                  </div>
+                </motion.div>
+
+                {/* Offline Kart */}
+                <motion.div
+                  className="absolute w-[200px] sm:w-[230px] md:w-[260px] rounded-[20px] sm:rounded-[24px] md:rounded-[26px] border border-emerald-500/20 bg-emerald-950/50 p-4 sm:p-5 shadow-[0_30px_60px_rgba(15,23,42,0.55)] sm:shadow-[0_40px_70px_rgba(15,23,42,0.55)] backdrop-blur-xl cursor-pointer left-[-100px] top-[-80px] sm:left-[-115px] md:left-[-130px] sm:top-[-90px] md:top-[-100px]"
+                  animate={{
+                    y: is3DAreaHovered ? 0 : 30,
+                    opacity: is3DAreaHovered ? 1 : 0.5,
+                    rotate: 3
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  style={{
+                    zIndex: is3DAreaHovered ? 20 : 5
+                  }}
+                >
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400" />
+                    <div className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-emerald-400">Offline Mode</div>
+                  </div>
+                  <div className="mt-2 sm:mt-3 text-xl sm:text-2xl font-semibold text-white">Works without internet</div>
+                  <div className="mt-3 sm:mt-4 space-y-2 sm:space-y-3">
+                    <div className="h-1.5 sm:h-2 w-full rounded-full bg-emerald-500/30" />
+                    <div className="h-1.5 sm:h-2 w-3/4 rounded-full bg-emerald-500/20" />
+                    <div className="h-1.5 sm:h-2 w-4/5 rounded-full bg-emerald-500/15" />
+                  </div>
+                </motion.div>
               </motion.div>
-              <motion.div
-                className="absolute left-1/2 top-1/2 w-44 -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-gray-300"
-                style={{ transform: 'translateZ(10px) translateX(90px) translateY(60px)' }}
-              >
-                Offline ready
-                <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
-                  <div className="h-1.5 w-2/3 rounded-full bg-emerald-300/60" />
-                </div>
+            </motion.div>
+          </motion.div>
               </motion.div>
             </motion.div>
           </motion.div>
